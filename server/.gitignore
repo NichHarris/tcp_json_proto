@@ -1,28 +1,18 @@
 # Byte Compiled Files
 __pycache__/
-*.py[cod]
 *$py.class
 bin/
 
 # Packaging / Distributions
 .Python
 build/
-dist/
 lib/
-lib64/
 var/
+__pypackages__/
 
-# Unit test / coverage reports
+# Unit & Coverage Tests
 .cache
 .pytest_cache/
-cover/
-
-# IPython
-profile_default/
-ipython_config.py
-
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow
-__pypackages__/
 
 # Environments
 .env
@@ -32,6 +22,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+pyvenv.cfg
 
 # Mac File
+../.DS_Store
 .DS_Store
