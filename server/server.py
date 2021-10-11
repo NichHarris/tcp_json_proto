@@ -12,6 +12,11 @@ class WorkloadServicer(pb_grpc.WorkloadServiceServicer):
         batch_size = request.batch_seize
         data_type = request.data_type
 
-        # Response For Data Like This in Comment - Not Sure What to do In Between So Far Will Just Return the Request
+        # TODO: Write Method to Take the Response Arguments to Get RFD Arguments
+        # - Not Sure What to do In Between So Far Will Just Return the Request
+
+        # Expected Return Response
         # return pb.WorkloadRFD(rfd_id, last_batch_id, requested_data_samples)
+        
+        # Since Method to Get RFD Arguments Not in Place, Return Back the RFW for Now
         return pb.WorkloadRFW(rfw_id, benchmark_type, workload_metric, batch_id, batch_size, data_type)
