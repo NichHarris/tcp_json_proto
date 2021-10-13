@@ -7,10 +7,10 @@ syntax = "proto3";
 // Define Messages to Send and Receive Data
 // Request for Workload (RFW) and Response for Data (RFD) Messages
 message WorkloadRFD {
-    int32 rfd_id = 1;
+    int32 rfw_id = 1;
     int32 last_batch_id = 2;
     
-    //TODO: Ask Dr. Lin About Type of Sample Data Returned 
+    //Sample Data Returned 
     message WorkloadData {
         int32 CPUUtilization_Average = 1;
         int32 NetworkIn_Average = 2;
@@ -23,8 +23,10 @@ message WorkloadRFD {
 }
 
 message WorkloadRFW {
+    int32 rfw_id = 1;
+    bool benchmark_type = 2;
+        
     // Create Enum for Workload Metric Over Using int32
-    //TODO: Ask Dr. Lin About Enum vs Int32
     enum WorkloadMetric {
         CPU = 1;
         NetworkIn = 2;
@@ -32,8 +34,6 @@ message WorkloadRFW {
         Memory = 4;
     }
 
-    int32 rfw_id = 1;
-    bool benchmark_type = 2;
     WorkloadMetric workload_metric = 3;
     int32 batch_id = 4;
     int32 batch_size = 5;

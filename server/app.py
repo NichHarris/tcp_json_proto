@@ -39,7 +39,7 @@ if __name__=="__main__":
 # Last Batch Id (int)
 # Data Samples Requested (List<String>)
 # 
-# Design Data Model in noSQL Database, MongoDB
+# Design Data Model in MySQL Database or Stored in Files
 # Design Data Communication with:
 # - Text Based Deserialization using JSON
 # - Binary Deserialization using Protocol Buf or Thrift

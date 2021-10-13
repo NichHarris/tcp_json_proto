@@ -2,6 +2,41 @@ import grpc
 import workload_pb2 as pb
 import workload_pb2_grpc as pb_grpc
 
+
+import socket
+
+# Place in .env
+PORT = 65432
+HOSTNAME = '127.0.0.1'
+
+# Initialize Socket using 
+#   - AF_INET6 (Address Family Internet for IPv6) Specifying the Address Family 
+#   - SOCK_STREAM Specifying Connection Type As TCP
+# Using With Statement Closes Socket When With Statement is Complete
+with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
+    # Bind Hostname Address and Port Number to Socket
+    s.bind((HOSTNAME, PORT))
+
+    # Open TCP Connection
+    s.listen()
+
+    # Accept Client Connection
+    connection, address = s.accept()
+
+    with connection:
+        while True:
+            # Receive Data from Client Connection
+            # 1024 Represents Buffer Size in Bytes
+            data = connection.recv(1024)
+
+            # Break Condition
+            if not data:
+                break
+
+            # Send All Data Back to Client Socket
+            connection.sendall(data)
+
+# Serverless Architecture - Function Based
 class WorkloadServicer(pb_grpc.WorkloadServiceServicer):
     def Workload(self, request, context):
         # Request For Workload

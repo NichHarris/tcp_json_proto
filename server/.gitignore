@@ -25,5 +25,5 @@ venv.bak/
 pyvenv.cfg
 
 # Mac File
-**/.DS_Store
 .DS_Store
+.DS_Store?
