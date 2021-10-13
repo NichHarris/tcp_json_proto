@@ -21,6 +21,8 @@ with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
     s.listen()
 
     # Accept Client Connection
+    # - Connection Represents Client Socket Object
+    # - Address Represents Client IPv6 Address
     connection, address = s.accept()
 
     with connection:
@@ -51,7 +53,7 @@ class WorkloadServicer(pb_grpc.WorkloadServiceServicer):
         # - Not Sure What to do In Between So Far Will Just Return the Request
 
         # Expected Return Response
-        # return pb.WorkloadRFD(rfd_id, last_batch_id, requested_data_samples)
+        # return pb.WorkloadRFD(rfw_id, last_batch_id, requested_data_samples)
         
         # Since Method to Get RFD Arguments Not in Place, Return Back the RFW for Now
         return pb.WorkloadRFW(rfw_id, benchmark_type, workload_metric, batch_id, batch_size, data_type)

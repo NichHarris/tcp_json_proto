@@ -6,6 +6,7 @@ from flask import Flask
 #load_dotenv(".env", verbose=True)
 
 # Initialize App
+# HTTP Connection
 app = Flask(__name__)
 
 # Routing

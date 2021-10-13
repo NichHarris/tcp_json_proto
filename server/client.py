@@ -7,7 +7,7 @@ import socket
 PORT = 65432
 HOSTNAME = '127.0.0.1'
 
-# TCP Connection
+# Initialize Socket and Open TCP Connection
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     # Connect to Server Socket
     s.connect((HOSTNAME, PORT))
