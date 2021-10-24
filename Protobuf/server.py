@@ -1,9 +1,8 @@
-#import grpc
-#import workload_pb2 as pb
-#import workload_pb2_grpc as pb_grpc
-
 import os
-import socket
+import csv
+import sys
+import socket 
+import workload_pb2 as pb
 from dotenv import load_dotenv
 
 # Load Env, then Get Port and Hostname Env Variables
@@ -22,47 +21,82 @@ with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
     # Open TCP Connection
     s.listen()
 
+    print("Server Listening...\n")
+
     # Accept Client Connection
     # - Connection Represents Client Socket Object
     # - Address Represents Client IPv6 Address
     connection, address = s.accept()
 
+    print("Server Connected!\n")
+
     with connection:
         while True:
             # Receive Data from Client Connection
-            # 1024 Represents Buffer Size in Bytes
-            data = connection.recv(1024)
+            # 131072 Represents Buffer Size in Bytes
+            data = connection.recv(131072)
 
-            # TODO: Deserialize Request
-
-
-            # Read from Corresponding File
-
-            # TODO: Serialize Response
-
-            # Break Condition
+            # Break and Close Server Socket When Client Socket Closes
             if not data:
+                print("\nServer Socket Closed!\n")
                 break
 
+            print("Request Received! Perfoming Request ...")
+
+            # Deserialize Request
+            req = pb.WorkloadRFW()
+            req.ParseFromString(data)
+            print(req)
+
+            # Convert Numbers to Actual Values
+            benchmark_type = ""
+            if req.benchmark_type == True:
+                benchmark_type = "DVD"
+            else: 
+                benchmark_type = "NDBench"
+
+            data_type = ""
+            if req.data_type == True:
+                data_type = "training"
+            else: 
+                data_type = "testing"
+
+            # Get File to Read
+            fileName = f"../data/{benchmark_type}-{data_type}.csv"
+
+            data_samples = []
+            # Read File Line By Line
+            with open(fileName, mode = 'r') as file:
+                csvReader = csv.reader(file)
+
+                # Convert to List to Access Rows and Columns
+                csvRows = list(csvReader)
+
+                # TODO: Validate Batch Unit, Size, and Id Are Valid
+                
+                # Number of Batches = Number of Samples / Batch Unit
+                numSamples = csvReader.line_num - 1
+                numBatches = numSamples/req.batch_unit
+
+                startRecord = req.batch_id * req.batch_unit
+                endRecord = startRecord + req.batch_size * req.batch_unit - 1
+
+                workload_metric_index = req.workload_metric - 1
+                print(startRecord, endRecord, workload_metric_index)
+                for record_index in range(startRecord, endRecord): 
+                    data_samples.append(float(csvRows[record_index][workload_metric_index]))
+
+
+            last_batch_id = req.batch_id + req.batch_size - 1
+
+            # Serialize Response
+            # TODO: Fix Problem With Not Getting Back Requested Data Samples
+            rfd = pb.WorkloadRFD(rfw_id = req.rfw_id, last_batch_id = last_batch_id, requested_data_samples = data_samples)
+            print(rfd.rfw_id)
+            print(data_samples)
+            res = rfd.SerializeToString()
+
             # Send All Data Back to Client Socket
-            connection.sendall(data)
+            connection.sendall(res)
 
-# # Serverless Architecture - Function Based
-# class WorkloadServicer(pb_grpc.WorkloadServiceServicer):
-#     def Workload(self, request, context):
-#         # Request For Workload
-#         rfw_id = request.rfw_id
-#         benchmark_type = request.benchmark_type
-#         workload_metric = request.workload_metric
-#         batch_id = request.batch_id
-#         batch_size = request.batch_seize
-#         data_type = request.data_type
-
-#         # TODO: Write Method to Take the Response Arguments to Get RFD Arguments
-#         # - Not Sure What to do In Between So Far Will Just Return the Request
-
-#         # Expected Return Response
-#         # return pb.WorkloadRFD(rfw_id, last_batch_id, requested_data_samples)
-        
-#         # Since Method to Get RFD Arguments Not in Place, Return Back the RFW for Now
-#         return pb.WorkloadRFW(rfw_id, benchmark_type, workload_metric, batch_id, batch_size, data_type)
+            print("\nResponse Sent!\n")
