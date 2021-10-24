@@ -2,7 +2,6 @@ import grpc
 import workload_pb2 as pb
 import workload_pb2_grpc as pb_grpc
 
-
 import socket
 
 # Place in .env
