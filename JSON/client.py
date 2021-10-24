@@ -98,7 +98,7 @@ with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
 
         # Receive Response from Server
         # 1024 Represents Buffer Size in Bytes
-        data = s.recv(1024)
+        data = s.recv(131072)
 
         # Deserialize Response
         res = json.loads(data.decode('utf-8'))

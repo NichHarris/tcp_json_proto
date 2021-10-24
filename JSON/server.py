@@ -34,7 +34,7 @@ with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
         while True:
             # Receive Data from Client Connection
             # 1024 Represents Buffer Size in Bytes
-            data = connection.recv(32768)
+            data = connection.recv(131072)
 
             # Break and Close Server Socket When Client Socket Closes
             if not data:
@@ -61,7 +61,7 @@ with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
                 data_type = "testing"
 
             # Get File to Read
-            fileName = f"../data/{req['benchmark_type']}-{req['data_type']}.csv"
+            fileName = f"../data/{benchmark_type}-{data_type}.csv"
 
             data_samples = []
 
