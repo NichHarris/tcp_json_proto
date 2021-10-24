@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/rfd.schema.json",
+  "title": "RFD",
+  "description": "Response For Data",
+  "type": "object",
+  "properties": {
+    "rfw_id": {
+      "description": "Request Id",
+      "type": "integer"
+    },
+    "last_batch_id": {
+      "description": "Last Batch Id",
+      "type": "integer"
+    },
+    "data_samples": {
+      "description": "Workload Metric As Either CPU, NetworkIn, NetworkOut or Memory",
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    }
+  },
+  "required": ["rfw_id", "last_batch_id", "data_samples"]
+}

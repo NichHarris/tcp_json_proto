@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/rfw.schema.json",
+  "title": "RFW",
+  "description": "Request For Workload",
+  "type": "object",
+  "properties": {
+    "rfw_id": {
+      "description": "Request Id",
+      "type": "integer"
+    },
+    "benchmark_type": {
+      "description": "Benchmark Type As Either DVD or NDBench",
+      "type": "boolean"
+    },
+    "workload_metric": {
+      "description": "Workload Metric As Either CPU, NetworkIn, NetworkOut or Memory",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4
+    },
+    "batch_unit": {
+      "description": "Number of Samples Per Batch",
+      "type": "integer"
+    },
+    "batch_id": {
+      "description": "Batch Id",
+      "type": "integer"
+    },
+    "batch_size": {
+      "description": "Number of Desired Batches to Return",
+      "type": "integer"
+    },
+    "data_type": {
+      "description": "Data Type As Either Training or Testing",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "rfw_id",
+    "benchmark_type",
+    "workload_metric",
+    "batch_unit",
+    "batch_id",
+    "batch_size",
+    "data_type"
+  ]
+}

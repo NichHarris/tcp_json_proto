@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+// Install grpcio and grpc_tools 
+// Then Run: python -m grpc_tools.protoc -I./ --python_out=./ --grpc_python_out=./ workload.proto
+// Produces 2 Files: workload_pb2.py and workload_pb2_grpc.py
+
+// Define Messages to Send and Receive Data
+// Request for Workload (RFW) and Response for Data (RFD) Messages
+message WorkloadRFD {
+    int32 rfw_id = 1;
+    int32 last_batch_id = 2;
+    
+    //Sample Data Returned 
+    // TODO: Might Only Have to Return 1 Column
+    message WorkloadData {
+        int32 CPUUtilization_Average = 1;
+        int32 NetworkIn_Average = 2;
+        int32 NetworkOut_Average = 3;
+        float MemoryUtilization_Average = 4;
+        float Final_Target = 5;
+    }
+
+    WorkloadData requested_data_samples = 3;
+}
+
+message WorkloadRFW {
+    int32 rfw_id = 1;
+    bool benchmark_type = 2;
+    int32 workload_metric = 3;
+    int32 batch_unit = 4;
+    int32 batch_id = 5;
+    int32 batch_size = 6;
+    bool data_type = 7;
+}
+
+// Define Service with Remote Procedure Call (RPC) 
+// Workload Method Takes in Request for Workload (RFW) And Returns Response for Data (RFD)
+service WorkloadService {
+    rpc Workload (WorkloadRFW) returns (WorkloadRFD);
+}

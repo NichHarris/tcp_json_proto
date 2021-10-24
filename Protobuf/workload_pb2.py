@@ -16,13 +16,48 @@ _sym_db = _symbol_database.Default()
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='workload.proto',
   package='',
-  syntax='proto3',
+  syntax='proto2',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0eworkload.proto\"\x90\x02\n\x0bWorkloadRFD\x12\x0e\n\x06rfw_id\x18\x01 \x01(\x05\x12\x15\n\rlast_batch_id\x18\x02 \x01(\x05\x12\x39\n\x16requested_data_samples\x18\x03 \x01(\x0b\x32\x19.WorkloadRFD.WorkloadData\x1a\x9e\x01\n\x0cWorkloadData\x12\x1e\n\x16\x43PUUtilization_Average\x18\x01 \x01(\x05\x12\x19\n\x11NetworkIn_Average\x18\x02 \x01(\x05\x12\x1a\n\x12NetworkOut_Average\x18\x03 \x01(\x05\x12!\n\x19MemoryUtilization_Average\x18\x04 \x01(\x02\x12\x14\n\x0c\x46inal_Target\x18\x05 \x01(\x02\"\x87\x01\n\x0bWorkloadRFW\x12\x0e\n\x06rfw_id\x18\x01 \x01(\x05\x12\x16\n\x0e\x62\x65nchmark_type\x18\x02 \x01(\x08\x12\x17\n\x0fworkload_metric\x18\x03 \x01(\x05\x12\x10\n\x08\x62\x61tch_id\x18\x04 \x01(\x05\x12\x12\n\nbatch_size\x18\x05 \x01(\x05\x12\x11\n\tdata_type\x18\x06 \x01(\x08\x32\x39\n\x0fWorkloadService\x12&\n\x08Workload\x12\x0c.WorkloadRFW\x1a\x0c.WorkloadRFDb\x06proto3'
+  serialized_pb=b'\n\x0eworkload.proto\"\x90\x02\n\x0bWorkloadRFD\x12\x0e\n\x06rfw_id\x18\x01 \x02(\x05\x12\x15\n\rlast_batch_id\x18\x02 \x02(\x05\x12\x39\n\x16requested_data_samples\x18\x03 \x03(\x0b\x32\x19.WorkloadRFD.WorkloadData\x1a\x9e\x01\n\x0cWorkloadData\x12\x1e\n\x16\x43PUUtilization_Average\x18\x01 \x02(\x05\x12\x19\n\x11NetworkIn_Average\x18\x02 \x02(\x05\x12\x1a\n\x12NetworkOut_Average\x18\x03 \x02(\x05\x12!\n\x19MemoryUtilization_Average\x18\x04 \x02(\x02\x12\x14\n\x0c\x46inal_Target\x18\x05 \x02(\x02\"\xea\x01\n\x0bWorkloadRFW\x12\x0e\n\x06rfw_id\x18\x01 \x02(\x05\x12\x16\n\x0e\x62\x65nchmark_type\x18\x02 \x02(\x08\x12\x34\n\x0fworkload_metric\x18\x03 \x02(\x0e\x32\x1b.WorkloadRFW.WorkloadMetric\x12\x10\n\x08\x62\x61tch_id\x18\x04 \x02(\x05\x12\x12\n\nbatch_size\x18\x05 \x02(\x05\x12\x11\n\tdata_type\x18\x06 \x02(\x08\"D\n\x0eWorkloadMetric\x12\x07\n\x03\x43PU\x10\x01\x12\r\n\tNetworkIn\x10\x02\x12\x0e\n\nNetworkOut\x10\x03\x12\n\n\x06Memory\x10\x04\x32\x39\n\x0fWorkloadService\x12&\n\x08Workload\x12\x0c.WorkloadRFW\x1a\x0c.WorkloadRFD'
 )
 
 
+
+_WORKLOADRFW_WORKLOADMETRIC = _descriptor.EnumDescriptor(
+  name='WorkloadMetric',
+  full_name='WorkloadRFW.WorkloadMetric',
+  filename=None,
+  file=DESCRIPTOR,
+  create_key=_descriptor._internal_create_key,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='CPU', index=0, number=1,
+      serialized_options=None,
+      type=None,
+      create_key=_descriptor._internal_create_key),
+    _descriptor.EnumValueDescriptor(
+      name='NetworkIn', index=1, number=2,
+      serialized_options=None,
+      type=None,
+      create_key=_descriptor._internal_create_key),
+    _descriptor.EnumValueDescriptor(
+      name='NetworkOut', index=2, number=3,
+      serialized_options=None,
+      type=None,
+      create_key=_descriptor._internal_create_key),
+    _descriptor.EnumValueDescriptor(
+      name='Memory', index=3, number=4,
+      serialized_options=None,
+      type=None,
+      create_key=_descriptor._internal_create_key),
+  ],
+  containing_type=None,
+  serialized_options=None,
+  serialized_start=460,
+  serialized_end=528,
+)
+_sym_db.RegisterEnumDescriptor(_WORKLOADRFW_WORKLOADMETRIC)
 
 
 _WORKLOADRFD_WORKLOADDATA = _descriptor.Descriptor(
@@ -35,35 +70,35 @@ _WORKLOADRFD_WORKLOADDATA = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='CPUUtilization_Average', full_name='WorkloadRFD.WorkloadData.CPUUtilization_Average', index=0,
-      number=1, type=5, cpp_type=1, label=1,
+      number=1, type=5, cpp_type=1, label=2,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
       name='NetworkIn_Average', full_name='WorkloadRFD.WorkloadData.NetworkIn_Average', index=1,
-      number=2, type=5, cpp_type=1, label=1,
+      number=2, type=5, cpp_type=1, label=2,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
       name='NetworkOut_Average', full_name='WorkloadRFD.WorkloadData.NetworkOut_Average', index=2,
-      number=3, type=5, cpp_type=1, label=1,
+      number=3, type=5, cpp_type=1, label=2,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
       name='MemoryUtilization_Average', full_name='WorkloadRFD.WorkloadData.MemoryUtilization_Average', index=3,
-      number=4, type=2, cpp_type=6, label=1,
+      number=4, type=2, cpp_type=6, label=2,
       has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
       name='Final_Target', full_name='WorkloadRFD.WorkloadData.Final_Target', index=4,
-      number=5, type=2, cpp_type=6, label=1,
+      number=5, type=2, cpp_type=6, label=2,
       has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -76,7 +111,7 @@ _WORKLOADRFD_WORKLOADDATA = _descriptor.Descriptor(
   ],
   serialized_options=None,
   is_extendable=False,
-  syntax='proto3',
+  syntax='proto2',
   extension_ranges=[],
   oneofs=[
   ],
@@ -94,22 +129,22 @@ _WORKLOADRFD = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='rfw_id', full_name='WorkloadRFD.rfw_id', index=0,
-      number=1, type=5, cpp_type=1, label=1,
+      number=1, type=5, cpp_type=1, label=2,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
       name='last_batch_id', full_name='WorkloadRFD.last_batch_id', index=1,
-      number=2, type=5, cpp_type=1, label=1,
+      number=2, type=5, cpp_type=1, label=2,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
       name='requested_data_samples', full_name='WorkloadRFD.requested_data_samples', index=2,
-      number=3, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      number=3, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -121,7 +156,7 @@ _WORKLOADRFD = _descriptor.Descriptor(
   ],
   serialized_options=None,
   is_extendable=False,
-  syntax='proto3',
+  syntax='proto2',
   extension_ranges=[],
   oneofs=[
   ],
@@ -140,42 +175,42 @@ _WORKLOADRFW = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='rfw_id', full_name='WorkloadRFW.rfw_id', index=0,
-      number=1, type=5, cpp_type=1, label=1,
+      number=1, type=5, cpp_type=1, label=2,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
       name='benchmark_type', full_name='WorkloadRFW.benchmark_type', index=1,
-      number=2, type=8, cpp_type=7, label=1,
+      number=2, type=8, cpp_type=7, label=2,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
       name='workload_metric', full_name='WorkloadRFW.workload_metric', index=2,
-      number=3, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
+      number=3, type=14, cpp_type=8, label=2,
+      has_default_value=False, default_value=1,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
       name='batch_id', full_name='WorkloadRFW.batch_id', index=3,
-      number=4, type=5, cpp_type=1, label=1,
+      number=4, type=5, cpp_type=1, label=2,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
       name='batch_size', full_name='WorkloadRFW.batch_size', index=4,
-      number=5, type=5, cpp_type=1, label=1,
+      number=5, type=5, cpp_type=1, label=2,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
       name='data_type', full_name='WorkloadRFW.data_type', index=5,
-      number=6, type=8, cpp_type=7, label=1,
+      number=6, type=8, cpp_type=7, label=2,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -185,19 +220,22 @@ _WORKLOADRFW = _descriptor.Descriptor(
   ],
   nested_types=[],
   enum_types=[
+    _WORKLOADRFW_WORKLOADMETRIC,
   ],
   serialized_options=None,
   is_extendable=False,
-  syntax='proto3',
+  syntax='proto2',
   extension_ranges=[],
   oneofs=[
   ],
   serialized_start=294,
-  serialized_end=429,
+  serialized_end=528,
 )
 
 _WORKLOADRFD_WORKLOADDATA.containing_type = _WORKLOADRFD
 _WORKLOADRFD.fields_by_name['requested_data_samples'].message_type = _WORKLOADRFD_WORKLOADDATA
+_WORKLOADRFW.fields_by_name['workload_metric'].enum_type = _WORKLOADRFW_WORKLOADMETRIC
+_WORKLOADRFW_WORKLOADMETRIC.containing_type = _WORKLOADRFW
 DESCRIPTOR.message_types_by_name['WorkloadRFD'] = _WORKLOADRFD
 DESCRIPTOR.message_types_by_name['WorkloadRFW'] = _WORKLOADRFW
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
@@ -233,8 +271,8 @@ _WORKLOADSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=431,
-  serialized_end=488,
+  serialized_start=530,
+  serialized_end=587,
   methods=[
   _descriptor.MethodDescriptor(
     name='Workload',
