@@ -47,7 +47,20 @@ with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
             req = json.loads(data.decode('utf-8'))
             print(req)
 
-            # # Get File to Read
+            # Convert Numbers to Actual Values
+            benchmark_type = ""
+            if req['benchmark_type'] == 1:
+                benchmark_type = "DVD"
+            else: 
+                benchmark_type = "NDBench"
+
+            data_type = ""
+            if req['data_type'] == 1:
+                data_type = "training"
+            else: 
+                data_type = "testing"
+
+            # Get File to Read
             fileName = f"../data/{req['benchmark_type']}-{req['data_type']}.csv"
 
             data_samples = []
@@ -68,19 +81,10 @@ with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
                 startRecord = req['batch_id'] * req['batch_unit']
                 endRecord = startRecord + req['batch_size'] * req['batch_unit'] - 1
 
-                selectedCol = req['workload_metric']
-                if selectedCol == "CPUUtilization_Average":
-                    selectedCol = 1
-                elif selectedCol == "NetworkIn_Average":
-                    selectedCol = 2
-                elif selectedCol == "NetworkOut_Average":
-                    selectedCol = 3
-                elif selectedCol == "MemoryUtilization_Average":
-                    selectedCol = 4
+                workload_metric_index = req['workload_metric'] - 1
                 
-                # , req['batch_unit']
-                for i in range(startRecord, endRecord): 
-                    data_samples.append(csvRows[i][selectedCol - 1])
+                for record_index in range(startRecord, endRecord): 
+                    data_samples.append(csvRows[record_index][workload_metric_index])
 
 
             last_batch_id = req['batch_id'] + req['batch_size'] - 1

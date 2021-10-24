@@ -36,10 +36,10 @@ with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
                 
             # Validate Benchmark Type from Input
             if benchmark_type == "1":
-                benchmark_type = "DVD"
+                benchmark_type = 1
                 isValidated = not isValidated
             elif benchmark_type == "2":
-                benchmark_type = "NDBench"
+                benchmark_type = 2
                 isValidated = not isValidated
             else: 
                 writeWarningMessage("\nInvalid Benchmark Type! Must Enter Either 1 or 2! \n")
@@ -51,16 +51,16 @@ with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
 
             # Validate Worklod Metric from Input
             if workload_metric == "1":
-                workload_metric = "CPUUtilization_Average"
+                workload_metric = 1
                 isValidated = not isValidated
             elif workload_metric == "2":
-                workload_metric = "NetworkIn_Average"
+                workload_metric = 2
                 isValidated = not isValidated
             elif workload_metric == "3":
-                workload_metric = "NetworkOut_Average"
+                workload_metric = 3
                 isValidated = not isValidated
             elif workload_metric == "4":
-                workload_metric = "MemoryUtilization_Average"
+                workload_metric = 4
                 isValidated = not isValidated
             else:
                 writeWarningMessage("\nInvalid Workload Metric! Must Enter Either 1, 2, 3, or 4! \n")
@@ -75,10 +75,10 @@ with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
             
             # Validate Data Type from Input
             if data_type == "1":
-                data_type = "training"
+                data_type = 1
                 isValidated = not isValidated
             elif data_type == "2":
-                data_type = "testing"
+                data_type = 2
                 isValidated = not isValidated
             else: 
                 writeWarningMessage("\nInvalid Data Type! Must Enter Either 1 or 2!\n")
