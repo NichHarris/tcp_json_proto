@@ -91,6 +91,9 @@ with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
         # Serialize Request  
         req = json.dumps(rfw)
 
+        with open("rfw.json", "w") as file:
+            json.dump(req, file)
+
         # Send Request to Server
         s.sendall(req.encode("utf-8"))
 
@@ -108,6 +111,8 @@ with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
         print(res)
 
         # TODO: Write Response to File
+        with open("rfd.json", "w") as file:
+            json.dump(res, file)
 
         # Continue Loop If More Requests Are to Be Done
         continueRFW = input("\nWant to Request Another Workload (y/n) ? ").strip()
