@@ -94,7 +94,7 @@ with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
         req = json.dumps(rfw)
 
         with open("rfw.json", "w") as file:
-            json.dump(req, file)
+            json.dump(rfw, file)
 
         # Send Request to Server
         s.sendall(req.encode("utf-8"))
