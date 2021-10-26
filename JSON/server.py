@@ -34,7 +34,7 @@ with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
         while True:
             # Receive Data from Client Connection
             # 1024 Represents Buffer Size in Bytes
-            data = connection.recv(131072)
+            data = connection.recv(1048576)
 
             # Break and Close Server Socket When Client Socket Closes
             if not data:
@@ -72,8 +72,6 @@ with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
                 # Convert to List to Access Rows and Columns
                 csvRows = list(csvReader)
 
-                # TODO: Validate Batch Unit, Size, and Id Are Valid
-
                 # Number of Batches = Number of Samples / Batch Unit
                 numSamples = csvReader.line_num - 1
                 numBatches = numSamples/req['batch_unit']
@@ -81,11 +79,12 @@ with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
                 startRecord = req['batch_id'] * req['batch_unit']
                 endRecord = startRecord + req['batch_size'] * req['batch_unit'] - 1
 
-                workload_metric_index = req['workload_metric'] - 1
-                
-                for record_index in range(startRecord, endRecord): 
-                    data_samples.append(csvRows[record_index][workload_metric_index])
+                # TODO: Validate startRecord and endRecord are Within List Limits
 
+                workload_metric_index = req['workload_metric'] - 1
+
+                for record_index in range(startRecord, endRecord + 1): 
+                    data_samples.append(csvRows[record_index][workload_metric_index])
 
             last_batch_id = req['batch_id'] + req['batch_size'] - 1
             rfd = {"rfw_id": req['rfw_id'], "last_batch_id": last_batch_id, "data_samples": data_samples} 

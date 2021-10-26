@@ -65,6 +65,8 @@ with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
             else:
                 writeWarningMessage("\nInvalid Workload Metric! Must Enter Either 1, 2, 3, or 4! \n")
 
+        # TODO: Validate Batch Unit, Size, and Id Are Valid (ie > 0)
+
         batch_unit = int(input("Enter Batch Unit: "))
         batch_id = int(input("Enter Batch Id: "))
         batch_size = int(input("Enter Batch Size: "))
@@ -98,7 +100,7 @@ with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
 
         # Receive Response from Server
         # 1024 Represents Buffer Size in Bytes
-        data = s.recv(131072)
+        data = s.recv(1048576)
 
         # Deserialize Response
         res = json.loads(data.decode('utf-8'))
