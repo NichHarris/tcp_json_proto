@@ -72,6 +72,9 @@ with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
                 # Convert to List to Access Rows and Columns
                 csvRows = list(csvReader)
 
+                # TODO: Validate Batch Unit, Size, and Id Are Valid
+                
+
                 # Number of Batches = Number of Samples / Batch Unit
                 numSamples = csvReader.line_num - 1
                 numBatches = numSamples/req['batch_unit']
