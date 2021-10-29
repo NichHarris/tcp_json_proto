@@ -7,7 +7,7 @@
   "properties": {
     "rfw_id": {
       "description": "Request Id",
-      "type": "integer"
+      "type": "string"
     },
     "last_batch_id": {
       "description": "Last Batch Id",

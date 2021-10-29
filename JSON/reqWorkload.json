@@ -7,7 +7,7 @@
   "properties": {
     "rfw_id": {
       "description": "Request Id",
-      "type": "integer"
+      "type": "string"
     },
     "benchmark_type": {
       "description": "Benchmark Type As Either DVD or NDBench",

@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import secrets
 import socket 
 from dotenv import load_dotenv
 
@@ -8,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 PORT = int(os.getenv("PORT"))
 HOSTNAME = os.getenv("HOSTNAME")
-
+print(os.path.dirname(__file__))
 # Print Warning Message with Different Colors
 WARNING = "\033[1;31m"
 RESET = "\033[0;0m"
@@ -26,9 +27,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
     hasRFW = True
     while hasRFW:
-        # Read User Input to Create Request
-        rfw_id = int(input("\nEnter RFW ID: "))
+        rfw_id = secrets.token_urlsafe(5)[:5]
+        os.mkdir(f"../Output/{rfw_id}")
 
+        # Read User Input to Create Request
         # Used to Validate Request
         isValidated = False
         while not isValidated:
@@ -93,7 +95,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         # Serialize Request  
         req = json.dumps(rfw)
 
-        with open("rfw.json", "w") as file:
+        with open(f"../Output/{rfw_id}/rfw_{rfw_id}.json", "w") as file:
             json.dump(rfw, file)
 
         # Send Request to Server
@@ -104,7 +106,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         # Receive Response from Server
         # 1024 Represents Buffer Size in Bytes
         data = s.recv(1048576)
-
+        
         # Deserialize Response
         res = json.loads(data.decode('utf-8'))
 
@@ -113,7 +115,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         print(res)
 
         # TODO: Write Response to File
-        with open("rfd.json", "w") as file:
+        with open(f"../Output/{rfw_id}/rfd_{rfw_id}.json", "w") as file:
             json.dump(res, file)
 
         # Continue Loop If More Requests Are to Be Done
