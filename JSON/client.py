@@ -18,7 +18,7 @@ def writeWarningMessage(msg):
     sys.stdout.write(RESET)
 
 # Initialize Socket and Open TCP Connection
-with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     # Connect to Server Socket
     s.connect((HOSTNAME, PORT))
     

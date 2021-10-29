@@ -14,7 +14,7 @@ HOSTNAME = os.getenv("HOSTNAME")
 #   - AF_INET6 (Address Family Internet for IPv6) Specifying the Address Family 
 #   - SOCK_STREAM Specifying Connection Type As TCP
 # Using With Statement Closes Socket When With Statement is Complete
-with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     # Bind Hostname Address and Port Number to Socket
     s.bind((HOSTNAME, PORT))
 
