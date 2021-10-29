@@ -1,6 +1,8 @@
 import os
 import sys
-import socket 
+import socket
+import secrets
+import json
 import workload_pb2 as pb
 from dotenv import load_dotenv
 
@@ -18,7 +20,7 @@ def writeWarningMessage(msg):
     sys.stdout.write(RESET)
 
 # Initialize Socket and Open TCP Connection
-with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     # Connect to Server Socket
     s.connect((HOSTNAME, PORT))
     
@@ -27,7 +29,8 @@ with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
     hasRFW = True
     while hasRFW:
         # Read User Input to Create Request
-        rfw_id = int(input("\nEnter RFW ID: "))
+        rfw_id = secrets.token_urlsafe(5)[:5]
+        os.mkdir(f"../Output/{rfw_id}")
 
         # Used to Validate Request
         isValidated = False
@@ -88,7 +91,8 @@ with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
         rfw = pb.WorkloadRFW(rfw_id = rfw_id, benchmark_type = benchmark_type, workload_metric = workload_metric, batch_unit = batch_unit, batch_id = batch_id, batch_size = batch_size, data_type = data_type)
         req = rfw.SerializeToString()
 
-        # TODO: Write Request to File
+        with open(f"../Output/{rfw_id}/rfw_{rfw_id}.json", "w") as file:
+            json.dump(rfw, file)
 
         # Send Request to Server
         s.sendall(req)
@@ -107,7 +111,8 @@ with socket.socket(socket.AF_INET6, socket.SOCK_STREAM) as s:
         print("Response Received!")
         print(res)
 
-        # TODO: Write Response to File
+        with open(f"../Output/{rfw_id}/rfd_{rfw_id}.json", "w") as file:
+            json.dump(res, file)
 
         # Continue Loop If More Requests Are to Be Done
         continueRFW = input("\nWant to Request Another Workload (y/n) ? ").strip()
