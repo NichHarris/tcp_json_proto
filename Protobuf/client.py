@@ -106,7 +106,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
         # Deserialize Response
         res = pb.WorkloadRFD()
-        print(res)
+        print(data)
         res.ParseFromString(data)
 
         # Print Response
