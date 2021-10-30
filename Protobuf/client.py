@@ -4,6 +4,7 @@ import socket
 import secrets
 import json
 import workload_pb2 as pb
+from google.protobuf.json_format import MessageToJson
 from dotenv import load_dotenv
 
 # Load Env, then Get Port and Hostname Env Variables
@@ -92,7 +93,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         req = rfw.SerializeToString()
 
         with open(f"../Output/{rfw_id}/rfw_{rfw_id}.json", "w") as file:
-            json.dump(rfw, file)
+           json.dump(MessageToJson(rfw), file)
 
         # Send Request to Server
         s.sendall(req)
@@ -112,7 +113,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         print(res)
 
         with open(f"../Output/{rfw_id}/rfd_{rfw_id}.json", "w") as file:
-            json.dump(res, file)
+            json.dump(MessageToJson(res), file)
 
         # Continue Loop If More Requests Are to Be Done
         continueRFW = input("\nWant to Request Another Workload (y/n) ? ").strip()
