@@ -18,6 +18,11 @@ def writeWarningMessage(msg):
     print(msg)
     sys.stdout.write(RESET)
 
+def validate(num):
+    if num < 0:
+        return False
+    return True
+
 # Initialize Socket and Open TCP Connection
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     # Connect to Server Socket
@@ -67,11 +72,20 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             else:
                 writeWarningMessage("\nInvalid Workload Metric! Must Enter Either 1, 2, 3, or 4! \n")
 
-        # TODO: Validate Batch Unit, Size, and Id Are Valid (ie > 0)
-
         batch_unit = int(input("Enter Batch Unit: "))
+        while not validate(batch_unit):
+            writeWarningMessage("\nInvalid Batch Unit! Must Enter Greater than 0! \n")
+            batch_unit = int(input("Enter Batch Unit: "))
+        
         batch_id = int(input("Enter Batch Id: "))
+        while not validate(batch_id):
+            writeWarningMessage("\nInvalid Batch ID! Must Enter Greater than 0! \n")
+            batch_id = int(input("Enter Batch Id: "))
+        
         batch_size = int(input("Enter Batch Size: "))
+        while not validate(batch_size):
+            writeWarningMessage("\nInvalid Batch Size! Must Enter Greater than 0! \n")
+            batch_size = int(input("Enter Batch Size: "))
 
         isValidated = False
         while not isValidated:
@@ -89,8 +103,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
         # Serialize Request
         rfw = {"rfw_id": rfw_id,  "benchmark_type": benchmark_type, "workload_metric": workload_metric, "batch_unit": batch_unit, "batch_id": batch_id, "batch_size": batch_size, "data_type": data_type}
-
-        # TODO: Write Request to File
 
         # Serialize Request  
         req = json.dumps(rfw)
@@ -114,7 +126,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         print("Response Received!")
         print(res)
 
-        # TODO: Write Response to File
         with open(f"../Output/{rfw_id}/rfd_{rfw_id}.json", "w") as file:
             json.dump(res, file)
 

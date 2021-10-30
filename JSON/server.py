@@ -70,10 +70,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 csvReader = csv.reader(file)
 
                 # Convert to List to Access Rows and Columns
-                csvRows = list(csvReader)
-
-                # TODO: Validate Batch Unit, Size, and Id Are Valid
-                
+                csvRows = list(csvReader)                
 
                 # Number of Batches = Number of Samples / Batch Unit
                 numSamples = csvReader.line_num - 1
@@ -81,8 +78,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
                 startRecord = req['batch_id'] * req['batch_unit']
                 endRecord = startRecord + req['batch_size'] * req['batch_unit'] - 1
-
-                # TODO: Validate startRecord and endRecord are Within List Limits
 
                 workload_metric_index = req['workload_metric'] - 1
 

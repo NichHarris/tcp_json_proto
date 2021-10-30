@@ -20,6 +20,11 @@ def writeWarningMessage(msg):
     print(msg)
     sys.stdout.write(RESET)
 
+def validate(num):
+    if num < 0:
+        return False
+    return True
+
 # Initialize Socket and Open TCP Connection
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     # Connect to Server Socket
@@ -69,10 +74,20 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             else:
                 writeWarningMessage("\nInvalid Workload Metric! Must Enter Either 1, 2, 3, or 4! \n")
 
-        # TODO: Validate Batch Unit, Id, and Size (>0)
         batch_unit = int(input("Enter Batch Unit: "))
+        while not validate(batch_unit):
+            writeWarningMessage("\nInvalid Batch Unit! Must Enter Greater than 0! \n")
+            batch_unit = int(input("Enter Batch Unit: "))
+        
         batch_id = int(input("Enter Batch Id: "))
+        while not validate(batch_id):
+            writeWarningMessage("\nInvalid Batch ID! Must Enter Greater than 0! \n")
+            batch_id = int(input("Enter Batch Id: "))
+        
         batch_size = int(input("Enter Batch Size: "))
+        while not validate(batch_size):
+            writeWarningMessage("\nInvalid Batch Size! Must Enter Greater than 0! \n")
+            batch_size = int(input("Enter Batch Size: "))
 
         isValidated = False
         while not isValidated:
@@ -106,12 +121,11 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
         # Deserialize Response
         res = pb.WorkloadRFD()
-        print(data)
         res.ParseFromString(data)
 
         # Print Response
         print("Response Received!")
-        # print(MessageToJson(res))
+        print(res)
 
         with open(f"../Output/{rfw_id}/rfd_{rfw_id}.json", "w") as file:
             json.dump(MessageToJson(res), file)

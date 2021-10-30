@@ -14,6 +14,11 @@ def writeWarningMessage(msg):
     print(msg)
     sys.stdout.write(RESET)
 
+def validate(num):
+    if num < 0:
+        return False
+    return True
+    
 # Serverless Architecture
 # Set Up a Channel/HTTP Connection to Server
 with grpc.insecure_channel("localhost:50051") as c:
@@ -62,10 +67,20 @@ with grpc.insecure_channel("localhost:50051") as c:
             else:
                 writeWarningMessage("\nInvalid Workload Metric! Must Enter Either 1, 2, 3, or 4! \n")
 
-        # TODO: Validate Batch Unit, Id, and Size (>0)
         batch_unit = int(input("Enter Batch Unit: "))
+        while not validate(batch_unit):
+            writeWarningMessage("\nInvalid Batch Unit! Must Enter Greater than 0! \n")
+            batch_unit = int(input("Enter Batch Unit: "))
+        
         batch_id = int(input("Enter Batch Id: "))
+        while not validate(batch_id):
+            writeWarningMessage("\nInvalid Batch ID! Must Enter Greater than 0! \n")
+            batch_id = int(input("Enter Batch Id: "))
+        
         batch_size = int(input("Enter Batch Size: "))
+        while not validate(batch_size):
+            writeWarningMessage("\nInvalid Batch Size! Must Enter Greater than 0! \n")
+            batch_size = int(input("Enter Batch Size: "))
 
         isValidated = False
         while not isValidated:
