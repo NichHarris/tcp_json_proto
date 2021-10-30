@@ -1,4 +1,7 @@
 import grpc 
+import secrets
+import json
+import os
 import workload_pb2 as pb
 import workload_pb2_grpc as pb_grpc
 
@@ -19,7 +22,8 @@ with grpc.insecure_channel("localhost:50051") as c:
     hasRFW = True
     while hasRFW:
         # Read User Input to Create Request
-        rfw_id = int(input("\nEnter RFW ID: "))
+        rfw_id = secrets.token_urlsafe(5)[:5]
+        os.mkdir(f"../Output/{rfw_id}")
 
         # Used to Validate Request
         isValidated = False
@@ -80,7 +84,8 @@ with grpc.insecure_channel("localhost:50051") as c:
         rfw = pb.WorkloadRFW(rfw_id = rfw_id, benchmark_type = benchmark_type, workload_metric = workload_metric, batch_unit = batch_unit, batch_id = batch_id, batch_size = batch_size, data_type = data_type)
         req = rfw.SerializeToString()
 
-        # TODO: Write Request to File
+        with open(f"../Output/{rfw_id}/rfw_{rfw_id}.json", "w") as file:
+            json.dump(rfw, file)
 
         # Call Function with Request
         req = pb.WorkloadRFW(rfw_id = rfw_id, benchmark_type = benchmark_type, workload_metric = workload_metric, batch_unit = batch_unit, batch_id = batch_id, batch_size = batch_size, data_type = data_type)
@@ -95,7 +100,8 @@ with grpc.insecure_channel("localhost:50051") as c:
         print("Response Obtained from Serverless Function!")
         print(res)
 
-        # TODO: Write Response to File
+        with open(f"../Output/{rfw_id}/rfd_{rfw_id}.json", "w") as file:
+            json.dump(res, file)
 
         # Continue Loop If More Requests Are to Be Done
         continueRFW = input("\nWant to Request Another Workload (y/n) ? ").strip()
