@@ -106,11 +106,12 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
         # Deserialize Response
         res = pb.WorkloadRFD()
+        print(res)
         res.ParseFromString(data)
 
         # Print Response
         print("Response Received!")
-        print(MessageToJson(res))
+        # print(MessageToJson(res))
 
         with open(f"../Output/{rfw_id}/rfd_{rfw_id}.json", "w") as file:
             json.dump(MessageToJson(res), file)
