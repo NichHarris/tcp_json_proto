@@ -10,6 +10,7 @@ load_dotenv()
 PORT = int(os.getenv("PORT"))
 HOSTNAME = os.getenv("HOSTNAME")
 print(os.path.dirname(__file__))
+
 # Print Warning Message with Different Colors
 WARNING = "\033[1;31m"
 RESET = "\033[0;0m"
@@ -43,10 +44,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 
             # Validate Benchmark Type from Input
             if benchmark_type == "1":
-                benchmark_type = 1
+                benchmark_type = True
                 isValidated = not isValidated
             elif benchmark_type == "2":
-                benchmark_type = 2
+                benchmark_type = False
                 isValidated = not isValidated
             else: 
                 writeWarningMessage("\nInvalid Benchmark Type! Must Enter Either 1 or 2! \n")
@@ -93,10 +94,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             
             # Validate Data Type from Input
             if data_type == "1":
-                data_type = 1
+                data_type = True
                 isValidated = not isValidated
             elif data_type == "2":
-                data_type = 2
+                data_type = False
                 isValidated = not isValidated
             else: 
                 writeWarningMessage("\nInvalid Data Type! Must Enter Either 1 or 2!\n")

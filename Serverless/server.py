@@ -1,4 +1,5 @@
 import grpc 
+import csv
 import workload_pb2 as pb
 import workload_pb2_grpc as pb_grpc
 
@@ -17,12 +18,47 @@ class WorkloadServiceServicer(pb_grpc.WorkloadServiceServicer):
         batch_size = request.batch_size
         data_type = request.data_type
 
-        # TODO: Write Method to Take the Response Arguments to Get RFD Arguments
-        last_batch_id = 2
-        requested_data_samples = [1, 2.0, 3]
+        print("Request Received! Perfoming Request ...")
+        print(request)
 
-        # Expected Return Response
-        return pb.WorkloadRFD(rfw_id = rfw_id, last_batch_id = last_batch_id, requested_data_samples = requested_data_samples)
+        # Convert Numbers to Actual Values
+        if benchmark_type == True:
+            benchmark_type = "DVD"
+        else: 
+            benchmark_type = "NDBench"
+
+        if data_type == True:
+            data_type = "training"
+        else: 
+            data_type = "testing"
+
+        # Get File to Read
+        fileName = f"../data/{benchmark_type}-{data_type}.csv"
+
+        data_samples = []
+        # Read File Line By Line
+        with open(fileName, mode = 'r') as file:
+            csvReader = csv.reader(file)
+
+            # Convert to List to Access Rows and Columns
+            csvRows = list(csvReader)
+            
+            # Number of Batches = Number of Samples / Batch Unit
+            numSamples = csvReader.line_num - 1
+            numBatches = numSamples/batch_unit
+
+            startRecord = batch_id * batch_unit
+            endRecord = startRecord + batch_size * batch_unit - 1
+
+            workload_metric_index = workload_metric - 1
+
+            for record_index in range(startRecord, endRecord): 
+                data_samples.append(float(csvRows[record_index][workload_metric_index]))
+
+        last_batch_id = batch_id + batch_size - 1
+
+        # Return Response
+        return pb.WorkloadRFD(rfw_id = rfw_id, last_batch_id = last_batch_id, requested_data_samples = data_samples)
 
 # Code From GRPC Python Guide Repo (https://github.com/grpc/grpc/blob/v1.30.0/examples/python/route_guide/route_guide_server.py) 
 def serve():

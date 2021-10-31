@@ -74,6 +74,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             else:
                 writeWarningMessage("\nInvalid Workload Metric! Must Enter Either 1, 2, 3, or 4! \n")
 
+        # Validation for Batch Unit, Id, and Size to Be Positive
         batch_unit = int(input("Enter Batch Unit: "))
         while not validate(batch_unit):
             writeWarningMessage("\nInvalid Batch Unit! Must Enter Greater than 0! \n")
@@ -107,6 +108,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         rfw = pb.WorkloadRFW(rfw_id = rfw_id, benchmark_type = benchmark_type, workload_metric = workload_metric, batch_unit = batch_unit, batch_id = batch_id, batch_size = batch_size, data_type = data_type)
         req = rfw.SerializeToString()
 
+        # Write Request to File
         with open(f"../Output/{rfw_id}/rfw_{rfw_id}.json", "w") as file:
            json.dump(MessageToJson(rfw), file)
 
@@ -127,6 +129,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         print("Response Received!")
         print(res)
 
+        # Write Response to File
         with open(f"../Output/{rfw_id}/rfd_{rfw_id}.json", "w") as file:
             json.dump(MessageToJson(res), file)
 

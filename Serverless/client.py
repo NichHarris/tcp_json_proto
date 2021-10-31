@@ -96,13 +96,6 @@ with grpc.insecure_channel("localhost:50051") as c:
             else: 
                 writeWarningMessage("\nInvalid Data Type! Must Enter Either 1 or 2!\n")
 
-        # Serialize Request
-        rfw = pb.WorkloadRFW(rfw_id = rfw_id, benchmark_type = benchmark_type, workload_metric = workload_metric, batch_unit = batch_unit, batch_id = batch_id, batch_size = batch_size, data_type = data_type)
-        req = rfw.SerializeToString()
-
-        with open(f"../Output/{rfw_id}/rfw_{rfw_id}.json", "w") as file:
-            json.dump(rfw, file)
-
         # Call Function with Request
         req = pb.WorkloadRFW(rfw_id = rfw_id, benchmark_type = benchmark_type, workload_metric = workload_metric, batch_unit = batch_unit, batch_id = batch_id, batch_size = batch_size, data_type = data_type)
 
@@ -113,11 +106,8 @@ with grpc.insecure_channel("localhost:50051") as c:
         res = stub.Workload(req) 
 
         # Print Response
-        print("Response Obtained from Serverless Function!")
+        print("Response Obtained from Serverless Function!\n")
         print(res)
-
-        with open(f"../Output/{rfw_id}/rfd_{rfw_id}.json", "w") as file:
-            json.dump(res, file)
 
         # Continue Loop If More Requests Are to Be Done
         continueRFW = input("\nWant to Request Another Workload (y/n) ? ").strip()

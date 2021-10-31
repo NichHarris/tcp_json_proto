@@ -43,7 +43,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
             print("Request Received! Perfoming Request ...")
 
-            # Deserialize Request
+            # Deserialize and Print Request
             req = pb.WorkloadRFW()
             req.ParseFromString(data)
             print(req)
@@ -80,7 +80,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 endRecord = startRecord + req.batch_size * req.batch_unit - 1
 
                 workload_metric_index = req.workload_metric - 1
-                print(startRecord, endRecord, workload_metric_index)
+
                 for record_index in range(startRecord, endRecord): 
                     data_samples.append(float(csvRows[record_index][workload_metric_index]))
 
@@ -89,8 +89,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
             # Serialize Response
             rfd = pb.WorkloadRFD(rfw_id = req.rfw_id, last_batch_id = last_batch_id, requested_data_samples = data_samples)
-            print(rfd.rfw_id)
-            print(data_samples)
             res = rfd.SerializeToString()
 
             # Send All Data Back to Client Socket

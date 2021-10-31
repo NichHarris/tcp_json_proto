@@ -49,13 +49,13 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
             # Convert Numbers to Actual Values
             benchmark_type = ""
-            if req['benchmark_type'] == 1:
+            if req['benchmark_type'] == True:
                 benchmark_type = "DVD"
             else: 
                 benchmark_type = "NDBench"
 
             data_type = ""
-            if req['data_type'] == 1:
+            if req['data_type'] == True:
                 data_type = "training"
             else: 
                 data_type = "testing"
