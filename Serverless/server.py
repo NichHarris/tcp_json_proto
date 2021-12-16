@@ -1,7 +1,9 @@
+import os
 import sys
 import grpc 
 import workload_pb2 as pb
 import workload_pb2_grpc as pb_grpc
+from dotenv import load_dotenv
 
 # Parallel Threads
 from concurrent import futures 
@@ -10,7 +12,9 @@ from concurrent import futures
 sys.path.append("..")
 from response_output import get_file_name, read_data_samples
 
+# Override Auto Generated Servicer 
 class WorkloadServiceServicer(pb_grpc.WorkloadServiceServicer):
+    # Define Remote Procedural Call (RPC)
     def Workload(self, request, context):
         # Request For Workload Data
         rfw_id = request.rfw_id
@@ -33,17 +37,21 @@ class WorkloadServiceServicer(pb_grpc.WorkloadServiceServicer):
 
         print("Request Completed!\n")
 
-        # Return Response
+        # Package Output to Proto Response
         return pb.WorkloadRFD(rfw_id = rfw_id, last_batch_id = last_batch_id, requested_data_samples = data_samples)
 
 # Script Starting Point
 if __name__ == '__main__':
+    # Load Env to Get Server Port
+    load_dotenv()
+    SERVER_PORT = os.getenv("SERVER_PORT")
+
     # Create a Server to Service Remote Procedure Calls (RPCs) w/ Multiple Threads
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     pb_grpc.add_WorkloadServiceServicer_to_server(WorkloadServiceServicer(), server)
 
     # Open Server Port for RPCs
-    server.add_insecure_port('[::]:50051')
+    server.add_insecure_port(SERVER_PORT)
 
     # Start Server
     server.start()

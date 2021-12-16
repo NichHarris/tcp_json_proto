@@ -12,12 +12,12 @@ from request_input import make_request, keep_connection
 
 # Script Starting Point
 if __name__ == '__main__':
-    # Load Env to Get Server Ip Address
+    # Load Env to Get Server Address
     load_dotenv()
-    SERVER_IP = os.getenv("SERVER_IP")
+    SERVER_ADDR = os.getenv("SERVER_ADDR")
 
     # Set Up a Channel/HTTP Connection to Server with GRPC
-    with grpc.insecure_channel(SERVER_IP) as c:
+    with grpc.insecure_channel(SERVER_ADDR) as c:
         # Create Stub to First Connect to Server then Send Request and Retrieve Response
         stub = pb_grpc.WorkloadServiceStub(c)
 
@@ -26,14 +26,14 @@ if __name__ == '__main__':
             # Get User Input for Request
             rfw_id, benchmark_type, workload_metric, batch_unit, batch_size, batch_id, data_type = make_request() 
 
-            # Call Function with Request
+            # Serialize Req with Protobuf
             req = pb.WorkloadRFW(rfw_id = rfw_id, benchmark_type = benchmark_type, workload_metric = workload_metric, batch_unit = batch_unit, batch_id = batch_id, batch_size = batch_size, data_type = data_type)
 
             print("\nRequest Sent to Serverless Function: ")
             print(req)
 
-            # Get Response Output From Function
-            res = stub.Workload(req) 
+            # Call Workload RPC using Stub to Get Response
+            res = stub.Workload(req)
 
             # Print Response
             print("Response Obtained from Serverless Function: ")
@@ -42,4 +42,4 @@ if __name__ == '__main__':
             # Continue Loop If More Requests Are to Be Done
             has_reqs = keep_connection()
 
-    print("\nClient Connection Closed!\n")
+    print("\nConnection Closed!\n")

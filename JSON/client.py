@@ -10,7 +10,7 @@ from request_input import write_warning_message, make_request, keep_connection
 
 # Write to File Request and Response
 def write_file_output(data_id, data_type, content):
-    with open(f"../Output/{data_id}/{data_type}_{rfw_id}.json", "w") as file:
+    with open(f"../output/{data_id}/{data_type}_{rfw_id}.json", "w") as file:
         json.dump(content, file)
 
 # Script Starting Point
@@ -37,7 +37,7 @@ if __name__ == '__main__':
                 rfw_id, benchmark_type, workload_metric, batch_unit, batch_size, batch_id, data_type = make_request() 
 
                 # Create Folder to Store Request and Response
-                os.mkdir(f"../Output/{rfw_id}")
+                os.mkdir(f"../output/{rfw_id}")
 
                 # Serialize Request
                 rfw = {"rfw_id": rfw_id,  "benchmark_type": benchmark_type, "workload_metric": workload_metric, "batch_unit": batch_unit, "batch_id": batch_id, "batch_size": batch_size, "data_type": data_type}

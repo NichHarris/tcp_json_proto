@@ -1,0 +1,8 @@
+grpc-tools==0.0.1
+grpcio==1.41.0
+grpcio-tools==1.41.0
+protobuf==3.19.0
+python-dotenv==0.19.1
+six==1.16.0
+sockets==1.0.0
+uuid==1.30
