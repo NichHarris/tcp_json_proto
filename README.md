@@ -13,7 +13,7 @@
 
 Considerations: Size and Type of Data Used in Relation to Speed and Efficiency of Transmitting Data Over Wire
 
-### JSON - Text Based
+### JSON
 
 Defined JSON Data Model in reqWorkload.json and resData.json
 
