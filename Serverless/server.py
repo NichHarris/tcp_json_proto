@@ -6,7 +6,6 @@ import workload_pb2_grpc as pb_grpc
 # Parallel Threads
 from concurrent import futures 
 
-# Serverless Architecture - Function Based
 class WorkloadServiceServicer(pb_grpc.WorkloadServiceServicer):
     def Workload(self, request, context):
         # Request For Workload Data
@@ -21,52 +20,48 @@ class WorkloadServiceServicer(pb_grpc.WorkloadServiceServicer):
         print("Request Received! Perfoming Request ...")
         print(request)
 
-        # Convert Numbers to Actual Values
-        if benchmark_type == True:
-            benchmark_type = "DVD"
-        else: 
-            benchmark_type = "NDBench"
-
-        if data_type == True:
-            data_type = "training"
-        else: 
-            data_type = "testing"
+        # Convert Boolean to Actual Values
+        benchmark_type = "DVD" if benchmark_type else "NDBench"
+        data_type = "training" if data_type else "testing"
 
         # Get File to Read
-        fileName = f"../data/{benchmark_type}-{data_type}.csv"
+        file_name = f"../data/{benchmark_type}-{data_type}.csv"
 
-        data_samples = []
         # Read File Line By Line
-        with open(fileName, mode = 'r') as file:
-            csvReader = csv.reader(file)
+        data_samples = []
+        with open(file_name, mode = 'r') as file:
+            csv_reader = csv.reader(file)
 
             # Convert to List to Access Rows and Columns
-            csvRows = list(csvReader)
+            csv_rows = list(csv_reader)
             
             # Number of Batches = Number of Samples / Batch Unit
-            numSamples = csvReader.line_num - 1
-            numBatches = numSamples/batch_unit
+            num_samples = csv_reader.line_num - 1
+            num_batches = num_samples/batch_unit
 
-            startRecord = batch_id * batch_unit
-            endRecord = startRecord + batch_size * batch_unit - 1
+            # Start and End Indices User Requested  
+            start_record = batch_id * batch_unit
+            end_record = start_record + batch_size * batch_unit - 1
 
-            workload_metric_index = workload_metric - 1
-
-            for record_index in range(startRecord, endRecord): 
-                data_samples.append(float(csvRows[record_index][workload_metric_index]))
+            # Iterate Over File and Add All Data Samples from Requested Range
+            for record_index in range(start_record, end_record): 
+                data_samples.append(float(csv_rows[record_index][workload_metric - 1]))
 
         last_batch_id = batch_id + batch_size - 1
 
         # Return Response
         return pb.WorkloadRFD(rfw_id = rfw_id, last_batch_id = last_batch_id, requested_data_samples = data_samples)
 
-# Code From GRPC Python Guide Repo (https://github.com/grpc/grpc/blob/v1.30.0/examples/python/route_guide/route_guide_server.py) 
+# Serverless Architecture - Function Based
+# Code from GRPC Python Guide Repo 
+# (https://github.com/grpc/grpc/blob/v1.30.0/examples/python/route_guide/route_guide_server.py) 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    pb_grpc.add_WorkloadServiceServicer_to_server( WorkloadServiceServicer(), server)
+    pb_grpc.add_WorkloadServiceServicer_to_server(WorkloadServiceServicer(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
     server.wait_for_termination()
 
+# Script Starting Point
 if __name__ == '__main__':
     serve()

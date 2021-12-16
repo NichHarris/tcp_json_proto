@@ -1,6 +1,5 @@
 import os
 import csv
-import sys
 import json
 import socket 
 from dotenv import load_dotenv

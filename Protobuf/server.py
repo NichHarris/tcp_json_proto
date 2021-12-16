@@ -1,97 +1,116 @@
 import os
-import csv
 import sys
+import csv
 import socket 
 import workload_pb2 as pb
 from dotenv import load_dotenv
 
-# Load Env, then Get Port and Hostname Env Variables
-load_dotenv()
-PORT = int(os.getenv("PORT"))
-HOSTNAME = os.getenv("HOSTNAME")
+# Enable Import File From Outside Folder
+sys.path.append("..")
+from request_input import write_warning_message
 
-# Initialize Socket using 
-#   - AF_INET6 (Address Family Internet for IPv6) Specifying the Address Family 
-#   - SOCK_STREAM Specifying Connection Type As TCP
-# Using With Statement Closes Socket When With Statement is Complete
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    # Bind Hostname Address and Port Number to Socket
-    s.bind((HOSTNAME, PORT))
+# Get File Name from Benchmark and Data Types
+def get_file_name(benchmark_type, data_type): 
+    # Convert Boolean to Actual Values
+    benchmark_type = "DVD" if req.benchmark_type else "NDBench"
+    data_type = "training" if req.data_type else "testing"
 
-    # Open TCP Connection
-    s.listen()
+    # Return File to Read
+    return f"../data/{benchmark_type}-{data_type}.csv"
 
-    print("Server Listening...\n")
+# Read File And Get Data Samples
+def read_data_samples(file_name, batch_unit, batch_size, batch_id, workload_metric): 
+    data_samples = []
+    
+    # Read File Line By Line
+    with open(file_name, mode = 'r') as file:
+        csv_reader = csv.reader(file)
 
-    # Accept Client Connection
-    # - Connection Represents Client Socket Object
-    # - Address Represents Client IPv6 Address
-    connection, address = s.accept()
+        # Convert to List to Access Rows and Columns
+        csv_rows = list(csv_reader)
+        
+        # Number of Batches = Number of Samples / Batch Unit
+        num_samples = csv_reader.line_num - 1
+        num_batches = num_samples/batch_unit
 
-    print("Server Connected!\n")
+        # Start and End Indices User Requested
+        start_record = batch_id * batch_unit
+        end_record = start_record + batch_size * batch_unit - 1
 
-    with connection:
-        while True:
-            # Receive Data from Client Connection
-            # 131072 Represents Buffer Size in Bytes
-            data = connection.recv(131072)
+        # Iterate Over File and Add All Data Samples from Requested Range
+        for record_index in range(start_record, end_record): 
+            data_samples.append(float(csv_rows[record_index][workload_metric - 1]))
+    
+    return data_samples
 
-            # Break and Close Server Socket When Client Socket Closes
-            if not data:
-                print("\nServer Socket Closed!\n")
-                break
+# Script Starting Point
+if __name__ == '__main__':
+    # Load Env to Get Port and Hostname Env Variables
+    load_dotenv()
+    PORT = int(os.getenv("PORT"))
+    HOSTNAME = os.getenv("HOSTNAME")
 
-            print("Request Received! Perfoming Request ...")
+    # Initialize Socket using 
+    #   - AF_INET6 (Address Family Internet for IPv6) Specifying the Address Family 
+    #   - SOCK_STREAM Specifying Connection Type As TCP
+    # Using With Statement Closes Socket When With Statement is Complete
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        try: 
+            # Bind Hostname Address and Port Number to Socket
+            s.bind((HOSTNAME, PORT))
 
-            # Deserialize and Print Request
-            req = pb.WorkloadRFW()
-            req.ParseFromString(data)
-            print(req)
+            # Open TCP Connection
+            s.listen()
 
-            # Convert Numbers to Actual Values
-            benchmark_type = ""
-            if req.benchmark_type == True:
-                benchmark_type = "DVD"
-            else: 
-                benchmark_type = "NDBench"
+            print("Server Listening...\n")
 
-            data_type = ""
-            if req.data_type == True:
-                data_type = "training"
-            else: 
-                data_type = "testing"
+            # Accept Client Connection
+            # - Connection Represents Client Socket Object
+            # - Address Represents Client IPv6 Address
+            connection, address = s.accept()
+            print("Server Connected!\n")
 
-            # Get File to Read
-            fileName = f"../data/{benchmark_type}-{data_type}.csv"
+            with connection:
+                while True:
+                    # Receive Data from Client Connection
+                    # 1024 Represents Buffer Size in Bytes
+                    data = connection.recv(1024)
 
-            data_samples = []
-            # Read File Line By Line
-            with open(fileName, mode = 'r') as file:
-                csvReader = csv.reader(file)
+                    # Break and Close Server Socket When Client Socket Closes
+                    if not data:
+                        break
 
-                # Convert to List to Access Rows and Columns
-                csvRows = list(csvReader)
-                
-                # Number of Batches = Number of Samples / Batch Unit
-                numSamples = csvReader.line_num - 1
-                numBatches = numSamples/req.batch_unit
+                    print("Request Received!")
 
-                startRecord = req.batch_id * req.batch_unit
-                endRecord = startRecord + req.batch_size * req.batch_unit - 1
+                    # Deserialize and Print Request
+                    req = pb.WorkloadRFW()
+                    req.ParseFromString(data)
+                    print(req)
 
-                workload_metric_index = req.workload_metric - 1
+                    print("\nPerfoming Request ...")
 
-                for record_index in range(startRecord, endRecord): 
-                    data_samples.append(float(csvRows[record_index][workload_metric_index]))
+                    # Get File to Read
+                    file_name = get_file_name(req.benchmark_type, req.data_type)
 
+                    # Get Data Samples By Reading File and Iterating Over Request Batch Range
+                    data_samples = read_data_samples(file_name, req.batch_unit, req.batch_size, req.batch_id, req.workload_metric)
 
-            last_batch_id = req.batch_id + req.batch_size - 1
+                    # Calculate Last Batch Id        
+                    last_batch_id = req.batch_id + req.batch_size - 1
 
-            # Serialize Response
-            rfd = pb.WorkloadRFD(rfw_id = req.rfw_id, last_batch_id = last_batch_id, requested_data_samples = data_samples)
-            res = rfd.SerializeToString()
+                    # Serialize Response
+                    rfd = pb.WorkloadRFD(rfw_id = req.rfw_id, last_batch_id = last_batch_id, requested_data_samples = data_samples)
+                    res = rfd.SerializeToString()
 
-            # Send All Data Back to Client Socket
-            connection.sendall(res)
+                    # Send All Data Back to Client Socket
+                    connection.sendall(res)
+                    print("\nResponse Sent!")
+                    print(res)
 
-            print("\nResponse Sent!\n")
+                    print("\nWaiting for Another Request ...\n")
+
+        except KeyboardInterrupt:
+            # Close Socket on Keyboard Interrupt Before Ending Program
+            write_warning_message("Closing Socket due to Keyboard Interrupt! (Ctrl C)")
+    
+    print("Server Socket Closed!\n")
