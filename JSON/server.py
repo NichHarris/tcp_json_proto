@@ -1,95 +1,83 @@
 import os
-import csv
+import sys
 import json
 import socket 
 from dotenv import load_dotenv
 
-# Load Env, then Get Port and Hostname Env Variables
-load_dotenv()
-PORT = int(os.getenv("PORT"))
-HOSTNAME = os.getenv("HOSTNAME")
+# Enable Import File From Outside Folder
+sys.path.append("..")
+from request_input import write_warning_message
+from response_output import get_file_name, read_data_samples
 
-# Initialize Socket using 
-#   - AF_INET6 (Address Family Internet for IPv6) Specifying the Address Family 
-#   - SOCK_STREAM Specifying Connection Type As TCP
-# Using With Statement Closes Socket When With Statement is Complete
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    # Bind Hostname Address and Port Number to Socket
-    s.bind((HOSTNAME, PORT))
+# Script Starting Point
+if __name__ == '__main__':
+    # Load Env to Get Port and Hostname Env Variables
+    load_dotenv()
+    PORT = int(os.getenv("PORT"))
+    HOSTNAME = os.getenv("HOSTNAME")
 
-    # Open TCP Connection
-    s.listen()
+    # Initialize Socket using 
+    #   - AF_INET6 (Address Family Internet for IPv6) Specifying the Address Family 
+    #   - SOCK_STREAM Specifying Connection Type As TCP
+    # Using With Statement Closes Socket When With Statement is Complete
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        try:
+            # Bind Hostname Address and Port Number to Socket
+            s.bind((HOSTNAME, PORT))
 
-    print("Server Listening...\n")
+            # Open TCP Connection
+            s.listen()
 
-    # Accept Client Connection
-    # - Connection Represents Client Socket Object
-    # - Address Represents Client IPv6 Address
-    connection, address = s.accept()
+            print("Server Listening...\n")
 
-    print("Server Connected!\n")
+            # Accept Client Connection
+            # - Connection Represents Client Socket Object
+            # - Address Represents Client IPv6 Address
+            connection, address = s.accept()
+            print("Server Connected!\n")
 
-    with connection:
-        while True:
-            # Receive Data from Client Connection
-            # 1024 Represents Buffer Size in Bytes
-            data = connection.recv(1048576)
+            with connection:
+                while True:
+                    # Receive Data from Client Connection
+                    # 1024 Represents Buffer Size in Bytes
+                    data = connection.recv(1024)
 
-            # Break and Close Server Socket When Client Socket Closes
-            if not data:
-                print("\nServer Socket Closed!\n")
-                break
+                    # Break and Close Server Socket When Client Socket Closes
+                    if not data:
+                        break
 
-            print("Request Received! Perfoming Request ...")
+                    # Deserialize and Print Request
+                    print("Request Received!")
 
-            # Deserialize Request
-            req = json.loads(data.decode('utf-8'))
-            print(req)
+                    req = json.loads(data.decode('utf-8'))
+                    print(req)
 
-            # Convert Numbers to Actual Values
-            benchmark_type = ""
-            if req['benchmark_type'] == True:
-                benchmark_type = "DVD"
-            else: 
-                benchmark_type = "NDBench"
+                    print("\nPerfoming Request ...")
 
-            data_type = ""
-            if req['data_type'] == True:
-                data_type = "training"
-            else: 
-                data_type = "testing"
 
-            # Get File to Read
-            fileName = f"../data/{benchmark_type}-{data_type}.csv"
+                    # Get File to Read
+                    file_name = get_file_name(req['benchmark_type'], req['data_type'])
 
-            data_samples = []
 
-            # Read File Line By Line
-            with open(fileName, mode = 'r') as file:
-                csvReader = csv.reader(file)
+                    # Get Data Samples By Reading File and Iterating Over Request Batch Range
+                    data_samples = read_data_samples(file_name, req['batch_unit'], req['batch_size'], req['batch_id'], req['workload_metric'])
 
-                # Convert to List to Access Rows and Columns
-                csvRows = list(csvReader)                
+                    last_batch_id = req['batch_id'] + req['batch_size'] - 1
+                    
+                    # Serialize Response
+                    rfd = {"rfw_id": req['rfw_id'], "last_batch_id": last_batch_id, "data_samples": data_samples} 
+                    res = json.dumps(rfd)
 
-                # Number of Batches = Number of Samples / Batch Unit
-                numSamples = csvReader.line_num - 1
-                numBatches = numSamples/req['batch_unit']
+                    # Send All Data Back to Client Socket
+                    connection.sendall(res.encode('utf-8'))
 
-                startRecord = req['batch_id'] * req['batch_unit']
-                endRecord = startRecord + req['batch_size'] * req['batch_unit'] - 1
+                    print("\nResponse Sent!\n")
+                    print(res)
+                    
+                    print("\nWaiting for Another Request ...\n")
 
-                workload_metric_index = req['workload_metric'] - 1
-
-                for record_index in range(startRecord, endRecord + 1): 
-                    data_samples.append(csvRows[record_index][workload_metric_index])
-
-            last_batch_id = req['batch_id'] + req['batch_size'] - 1
-            rfd = {"rfw_id": req['rfw_id'], "last_batch_id": last_batch_id, "data_samples": data_samples} 
-
-            # Serialize Response
-            res = json.dumps(rfd)
-
-            # Send All Data Back to Client Socket
-            connection.sendall(res.encode('utf-8'))
-
-            print("\nResponse Sent!\n")
+        except KeyboardInterrupt:
+            # Close Socket on Keyboard Interrupt Before Ending Program
+            write_warning_message("Closing Socket due to Keyboard Interrupt! (Ctrl C)")
+    
+    print("Server Socket Closed!\n")

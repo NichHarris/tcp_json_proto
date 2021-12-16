@@ -1,7 +1,8 @@
 import sys
 import uuid
 
-# Functions Used Across All Three Implementations (JSON, Protobuf, Serverless with GRPC)
+# Client Functions Used Across All Three Implementations
+# TCP with JSON and Protobuf, HTTP with Serverless using GRPC
 
 # Print Warning Message with Different Colors
 RESET = '\033[0;0m'
