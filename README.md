@@ -9,17 +9,17 @@
 
 > Bonus: Developed a Serverless Application using gRPC over HTTP Channel
 
-# Data Models
+## Data Models
 
 Considerations: Size and Type of Data Used in Relation to Speed and Efficiency of Transmitting Data Over Wire
 
-## JSON - Text Based
+### JSON - Text Based
 
 Defined JSON Data Model in reqWorkload.json and resData.json
 
 - Provided Type and Description for Each Property in Request and Response Models
 
-## Protocol Buffers
+### Protocol Buffers
 
 Defined Proto Data Model in workload.proto
 
@@ -28,7 +28,7 @@ Defined Proto Data Model in workload.proto
 - Defined WorkloadService Service with Remote Procedure Call (RPC)
   - Created Workload RPC to Receive a Request for Workload and Return a Reponse for Data
 
-# TCP/IP Communication
+## TCP/IP Communication
 
 > Server Socket First Initialized \
 > Server Binds Hostname Address and Port Number to Server Side Socket \
@@ -42,7 +42,7 @@ Defined Proto Data Model in workload.proto
 
 > Client Receives and Deserializes Data, Receiving a Response for a Given Request
 
-# Serverless using gRPC
+## Serverless using gRPC
 
 > Created gRPC Server to Service Remote Procedure Calls (RPCs) \
 > Opened Server Port to Serve and Handle RPCs using a Thread Pool
@@ -57,9 +57,9 @@ Defined Proto Data Model in workload.proto
 
 > Client Receives and Deserializes Data, Receiving a Response for a Given Request
 
-# Setup Virtual Environment
+## Setup Virtual Environment
 
-## For Mac/Linux:
+### For Mac/Linux:
 
 ```
 pip3 install virtualenv
@@ -67,7 +67,7 @@ virtualenv env
 source env/bin/activate
 ```
 
-## For Windows:
+### For Windows:
 
 ```
 pip install virtualenv
@@ -75,7 +75,7 @@ virtualenv env
 ~\env\Scripts\activate
 ```
 
-## Install Dependencies:
+### Install Dependencies:
 
 ```
 pip install -r requirements.txt
